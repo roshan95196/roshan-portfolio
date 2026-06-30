@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, Download, Mail } from "lucide-react";
@@ -8,9 +9,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TerminalWindow } from "@/components/shared/terminal-window";
 import { FloatingIcons } from "@/components/shared/floating-icons";
-import { GradientText } from "@/components/shared/gradient-text";
+import { HeroGreeting } from "@/components/shared/hero-greeting";
 
 export function Hero() {
+  const [greetingComplete, setGreetingComplete] = useState(false);
+
   return (
     <section
       id="hero"
@@ -33,21 +36,44 @@ export function Hero() {
             {profile.availability}
           </Badge>
 
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-            <GradientText as="span" className="block">
-              {profile.name}
-            </GradientText>
-          </h1>
+          <HeroGreeting onComplete={() => setGreetingComplete(true)} />
 
-          <p className="mt-4 text-lg font-medium text-muted-foreground sm:text-xl">
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={
+              greetingComplete
+                ? { opacity: 1, y: 0 }
+                : { opacity: 0, y: 12 }
+            }
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="mt-4 text-lg font-medium text-muted-foreground sm:text-xl"
+          >
             {profile.title}
-          </p>
+          </motion.p>
 
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">
+          <motion.p
+            initial={{ opacity: 0, y: 12 }}
+            animate={
+              greetingComplete
+                ? { opacity: 1, y: 0 }
+                : { opacity: 0, y: 12 }
+            }
+            transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
+            className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground"
+          >
             {profile.tagline}
-          </p>
+          </motion.p>
 
-          <div className="mt-8 flex flex-wrap gap-3">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={
+              greetingComplete
+                ? { opacity: 1, y: 0 }
+                : { opacity: 0, y: 12 }
+            }
+            transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
+            className="mt-8 flex flex-wrap gap-3"
+          >
             <Button asChild size="lg">
               <Link href="#projects">
                 View Projects
@@ -66,7 +92,7 @@ export function Hero() {
                 Contact Me
               </Link>
             </Button>
-          </div>
+          </motion.div>
         </motion.div>
 
         <motion.div

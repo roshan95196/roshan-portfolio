@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { Github, Linkedin, Loader2, Mail, MapPin, Send } from "lucide-react";
+import { Github, Linkedin, Mail, MapPin, Send } from "lucide-react";
 import Link from "next/link";
 import { profile } from "@/data/profile";
 import { contactSchema, type ContactFormData } from "@/lib/validations";
+import { openEmailClient } from "@/lib/email-compose";
 import { SectionHeader } from "@/components/shared/section-header";
 import { GlassCard } from "@/components/shared/glass-card";
 import { Button } from "@/components/ui/button";
@@ -16,48 +16,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 
 export function Contact() {
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [showMailtoFallback, setShowMailtoFallback] = useState(false);
-
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactSchema),
   });
 
-  const onSubmit = async (data: ContactFormData) => {
-    setStatus("loading");
-    setErrorMessage("");
-    setShowMailtoFallback(false);
-
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        if (result.code === "NOT_CONFIGURED") {
-          setShowMailtoFallback(true);
-        }
-        throw new Error(result.error || "Failed to send message");
-      }
-
-      setStatus("success");
-      reset();
-    } catch (error) {
-      setStatus("error");
-      setErrorMessage(
-        error instanceof Error ? error.message : "Something went wrong"
-      );
-    }
+  const onSubmit = (data: ContactFormData) => {
+    openEmailClient("mailto", profile.email, data);
   };
 
   return (
@@ -66,7 +34,7 @@ export function Contact() {
         <SectionHeader
           label="Contact"
           title="Get In Touch"
-          description="Have a project in mind or want to discuss opportunities? I'd love to hear from you."
+          description="Fill in your details and send a message — your email app will open ready to send."
         />
 
         <div className="grid gap-8 lg:grid-cols-5">
@@ -131,7 +99,11 @@ export function Contact() {
             className="lg:col-span-3"
           >
             <GlassCard>
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="space-y-5"
+                noValidate
+              >
                 <div className="space-y-2">
                   <Label htmlFor="name">Name</Label>
                   <Input
@@ -178,47 +150,13 @@ export function Contact() {
                   )}
                 </div>
 
-                {status === "success" && (
-                  <p className="text-sm text-emerald-600 dark:text-emerald-400" role="status">
-                    Message sent successfully! I&apos;ll get back to you soon.
-                  </p>
-                )}
-
-                {status === "error" && (
-                  <div className="space-y-2" role="alert">
-                    <p className="text-sm text-destructive">{errorMessage}</p>
-                    {showMailtoFallback && (
-                      <p className="text-sm text-muted-foreground">
-                        Email me directly at{" "}
-                        <a
-                          href={`mailto:${profile.email}`}
-                          className="font-medium text-primary hover:underline"
-                        >
-                          {profile.email}
-                        </a>
-                      </p>
-                    )}
-                  </div>
-                )}
-
-                <Button
-                  type="submit"
-                  size="lg"
-                  disabled={status === "loading"}
-                  className="w-full sm:w-auto"
-                >
-                  {status === "loading" ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      Sending...
-                    </>
-                  ) : (
-                    <>
-                      <Send className="h-4 w-4" />
-                      Send Message
-                    </>
-                  )}
+                <Button type="submit" size="lg" className="w-full sm:w-auto">
+                  <Send className="h-4 w-4" />
+                  Send Message
                 </Button>
+                <p className="text-xs text-muted-foreground">
+                  Opens your default email app with a pre-filled message.
+                </p>
               </form>
             </GlassCard>
           </motion.div>

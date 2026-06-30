@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
 import { profile } from "@/data/profile";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://roshankumar.dev";
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : "https://roshan-portfolio-blush.vercel.app");
 
 export const siteConfig = {
   name: "Roshan Kumar",
-  title: "Roshan Kumar | Senior .NET Full Stack Developer",
+  title: "Roshan Kumar | .NET Full Stack Developer",
   description:
-    "Senior .NET Full Stack Developer specializing in ASP.NET Core, React, RESTful APIs, and scalable enterprise applications.",
+    ".NET Full Stack Developer specializing in ASP.NET Core, React, RESTful APIs, and scalable enterprise applications.",
   url: siteUrl,
   email: "roshankumar95196@gmail.com",
   location: "Noida, India",
@@ -41,11 +45,20 @@ export const metadata: Metadata = {
     title: siteConfig.title,
     description: siteConfig.description,
     siteName: siteConfig.name,
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: siteConfig.title,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: siteConfig.title,
     description: siteConfig.description,
+    images: ["/opengraph-image"],
   },
   robots: {
     index: true,

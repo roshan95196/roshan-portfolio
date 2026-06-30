@@ -9,8 +9,7 @@ A premium SaaS-style developer portfolio built with Next.js 15, TypeScript, Tail
 - **Styling:** Tailwind CSS
 - **UI:** ShadCN UI + Lucide React
 - **Animations:** Framer Motion
-- **Forms:** React Hook Form + Zod
-- **Email:** Resend
+- **Forms:** React Hook Form + Zod (contact opens Gmail/Outlook/mailto)
 - **Theme:** next-themes (Dark/Light)
 
 ## Getting Started
@@ -26,9 +25,7 @@ Open [http://localhost:3000](http://localhost:3000).
 ## Environment Variables
 
 ```env
-RESEND_API_KEY=re_your_api_key_here
-CONTACT_EMAIL=roshankumar95196@gmail.com
-NEXT_PUBLIC_SITE_URL=https://yourdomain.com
+NEXT_PUBLIC_SITE_URL=https://your-vercel-url.vercel.app
 ```
 
 ## Project Structure
@@ -54,8 +51,7 @@ Deploy to [Vercel](https://vercel.com) for optimal Next.js performance.
 Before deploying:
 1. Add your resume PDF to `public/resume/`
 2. Update LinkedIn/GitHub URLs in `src/data/profile.ts`
-3. Configure Resend API key and verified domain
-4. Add an OG image at `public/og-image.png`
+3. Set `NEXT_PUBLIC_SITE_URL` to your live Vercel URL
 
 ## License
 
